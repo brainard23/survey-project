@@ -1,6 +1,6 @@
 export const navigation = [
   { name: "Dashboard", to: "/" },
-  { name: "Survey", to: "/survey", current: false },
+  { name: "Survey", to: "/surveys", current: false },
 ];
 
 export const userNavigation = [
