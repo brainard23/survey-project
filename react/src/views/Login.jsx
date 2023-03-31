@@ -1,6 +1,40 @@
 import { LockClosedIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
+import axiosClient from "../axios";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function Login() {
+  const { setCurrentUser, setUserToken } = useStateContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState({ __html: "" });
+
+
+  const loginHandler = (ev) => { 
+    ev.preventDefault();
+    setError({ __html: "" });
+
+    axiosClient
+      .post("/login", {
+        email,
+        password,
+      })
+      .then(({ data }) => {
+        setCurrentUser(data.user);
+        setUserToken(data.token);
+      })
+      .catch((error) => {
+        if (error.response) {
+          const finalErrors = Object.values(error.response.data.errors).reduce(
+            (accum, next) => [...accum, ...next],
+            []
+          );
+          setError({ __html: finalErrors.join("<br>") });
+        }
+        console.error(error);
+      });
+  };
+
   return (
     <>
       <div>
@@ -8,7 +42,13 @@ export default function Login() {
           Sign in to your account
         </h2>
       </div>
-      <form className="mt-8 space-y-6" action="#" method="POST">
+      {error.__html && (
+        <div
+          className="bg-red-500 rounded py-2 px-3 text-white"
+          dangerouslySetInnerHTML={error}
+        ></div>
+      )}
+      <form className="mt-8 space-y-6" action="#" method="POST" onSubmit={loginHandler}>
         <input type="hidden" name="remember" defaultValue="true" />
         <div className="-space-y-px rounded-md shadow-sm">
           <div>
@@ -18,6 +58,8 @@ export default function Login() {
             <input
               id="email-address"
               name="email"
+              value={email}
+              onChange={(ev) => setEmail(ev.target.value)}
               type="email"
               autoComplete="email"
               required
@@ -33,6 +75,8 @@ export default function Login() {
               id="password"
               name="password"
               type="password"
+              value={password}
+              onChange={(ev) => setPassword(ev.target.value)}
               autoComplete="current-password"
               required
               className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"

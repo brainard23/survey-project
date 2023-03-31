@@ -4,6 +4,7 @@ import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { navigation, userNavigation } from "../lib/navigation";
 import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
+import axiosClient from "../axios";
 
 // const user = {
 // 
@@ -19,7 +20,7 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const {currentUser, userToken} = useStateContext();
+  const {currentUser,setCurrentUser, userToken, setUserToken} = useStateContext();
 
   if(!userToken) {
     return <Navigate to='login' />
@@ -27,6 +28,12 @@ export default function DefaultLayout() {
 
   const logout = (e) => {
     e.preventDefault();
+    axiosClient.post('/logout')
+      .then(res => {
+        setCurrentUser({})
+        setUserToken(null)
+        console.log(res)
+      })
   };
   
   return (
