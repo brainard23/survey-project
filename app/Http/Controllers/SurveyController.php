@@ -6,9 +6,12 @@ use App\Http\Requests\SurveyStoreRequest;
 use App\Http\Requests\SurveyUpdateRequest;
 use App\Http\Resources\SurveyResource;
 use App\Models\Survey;
+use App\Models\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str; 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Enum;
 
 class SurveyController extends Controller
 {
@@ -131,7 +134,18 @@ class SurveyController extends Controller
 
     private function createQuestion($data) 
     {
+        if (is_array($data['data'])) {
+            $data['data'] = json_encode($data['data']); 
+        }
+        $validator = Validator::make($data, [
+            'question' => 'required|string', 
+            'type' => ['required', new Enum(QuestionTypeEnum::class)], 
+            'description' => 'nullable|string', 
+            'data' => 'present', 
+            'survey_id' => 'exist:App\models\Survey, id'
+        ]); 
 
+        return SurveyQuestion::create($validator->validate());
     }
 
 }
