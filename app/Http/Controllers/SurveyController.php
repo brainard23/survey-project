@@ -45,7 +45,6 @@ class SurveyController extends Controller
 
         // return Survey::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         $data = $request->validated();
-
         //check if iamge was giv en and save on local file system
         if (isset($data['image'])) {
             $relativePath = $this->saveImage($data['image']);

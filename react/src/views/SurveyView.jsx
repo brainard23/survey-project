@@ -49,7 +49,8 @@ export default function SurveyView() {
       title: 'test', 
       description: 'test', 
       expire_date: '11/11/2022', 
-      status: true
+      status: true,
+      questions: []
     })
     // const payload = { ...survey };
     // if (payload.image) {
