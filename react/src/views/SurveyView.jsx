@@ -2,7 +2,7 @@ import { LinkIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import TButton from "../components/core/TButton";
 import PageComponent from "../components/PageComponent";
-// import axiosClient from "../axios.js";
+import axiosClient from "../axios.js";
 import { useNavigate, useParams } from "react-router-dom";
 // import SurveyQuestions from "../components/SurveyQuestions";
 // import { v4 as uuidv4 } from "uuid";
@@ -45,35 +45,40 @@ export default function SurveyView() {
 
   const onSubmit = (ev) => {
     ev.preventDefault();
+    axiosClient.post('/survey', {
+      title: 'test', 
+      description: 'test', 
+      expire_date: '11/11/2022', 
+      status: true
+    })
+    // const payload = { ...survey };
+    // if (payload.image) {
+    //   payload.image = payload.image_url;
+    // }
+    // delete payload.image_url;
+    // let res = null;
+    // if (id) {
+    //   res = axiosClient.put(`/survey/${id}`, payload);
+    // } else {
+    //   res = axiosClient.post("/survey", payload);
+    // }
 
-    const payload = { ...survey };
-    if (payload.image) {
-      payload.image = payload.image_url;
-    }
-    delete payload.image_url;
-    let res = null;
-    if (id) {
-      // res = axiosClient.put(`/survey/${id}`, payload);
-    } else {
-      // res = axiosClient.post("/survey", payload);
-    }
-
-    res
-      .then((res) => {
-        console.log(res);
-        navigate("/surveys");
-        if (id) {
-          showToast("The survey was updated");
-        } else {
-          showToast("The survey was created");
-        }
-      })
-      .catch((err) => {
-        if (err && err.response) {
-          setError(err.response.data.message);
-        }
-        console.log(err, err.response);
-      });
+    // res
+    //   .then((res) => {
+    //     console.log(res);
+    //     navigate("/surveys");
+    //     if (id) {
+    //       showToast("The survey was updated");
+    //     } else {
+    //       showToast("The survey was created");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     if (err && err.response) {
+    //       setError(err.response.data.message);
+    //     }
+    //     console.log(err, err.response);
+    //   });
   };
 
   function onQuestionsUpdate(questions) {
